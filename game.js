@@ -124,7 +124,7 @@ function component(width, height, color, x, y, speed) {
         var crash = true;
 
         if ((mybottom + this.speeddown < othertop - otherobj.speed) ||
-               (mytop > otherbottom) ||
+               (mytop > otherbottom + otherobj.speed) ||
                (myright - this.speedright < otherleft) ||
                (myleft + this.speedleft > otherright)) {
            crash = false;
@@ -275,7 +275,6 @@ function updateGameArea() {
     myGamePiece.moveright = 5 + myGameArea.addspeed;
     myGamePiece.moveleft = -5 - myGameArea.addspeed;
     myGamePiece.moveup = -5 - myGameArea.addspeed;
-    console.log(myObstacles.length)
     for (i = 0; i < myObstacles.length; i += 1) {
       if (myObstacles[i].y > 800){
         myObstacles.splice(i,1);
