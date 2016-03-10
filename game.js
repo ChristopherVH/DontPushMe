@@ -1,0 +1,395 @@
+
+var myGamePiece;
+var myObstacles = [];
+var startTime = new Date();
+
+function startGame() {
+    myGameArea.start();
+    myGamePiece = new component(30, 30, "red", 270, 540);
+    myObstacle = new component(80, 40, "blue", 80, 0);
+}
+
+
+
+var myGameArea = {
+    canvas : document.createElement("canvas"),
+    start : function() {
+        this.canvas.width = 800;
+        this.canvas.height = 800;
+        this.context = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.interval = setInterval(updateGameArea, 20);
+        this.frameNo = 0;
+        this.addspeed = 0;
+        this.speed = 2;
+        this.times = 5;
+        window.addEventListener('keydown', function (e) {
+            myGameArea.keys = (myGameArea.keys || []);
+            myGameArea.keys[e.keyCode] = true;
+        });
+        window.addEventListener('keyup', function (e) {
+            myGameArea.keys[e.keyCode] = false;
+        });
+    },
+    clear : function() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    },
+    stop : function() {
+        clearInterval(this.interval);
+    }
+};
+
+function drawElapsedTime() {
+    var elapsed = (parseInt((new Date() - startTime))/ 1000);
+    ctx = myGameArea.context;
+    ctx.font = "30px Arial";
+    ctx.fillStyle = "black";
+    ctx.fillText(elapsed.toString(),700,750);
+}
+
+function component(width, height, color, x, y, speed) {
+    this.width = width;
+    this.height = height;
+    this.crashUp = false;
+    this.crashDown = false;
+    this.speed = speed;
+    this.moveleft = -5;
+    this.moveright = 5;
+    this.movedown = 5;
+    this.moveup = -5;
+    this.x = x;
+    this.y = y;
+    this.lastmove = [this.x, this.y];
+    this.crashPositions = {top:false, bottom:false, right:false, left:false};
+    this.xmove = 0;
+    this.ymove = 0;
+    if(myGameArea.keys && myGameArea.keys[37]){
+      this.speedleft = -5;
+    }else{
+      this.speedleft = 0;
+    }
+    if(myGameArea.keys && myGameArea.keys[39]){
+      this.speedright = 5;
+    }else{
+      this.speedright = 0;
+    }
+    this.update = function(){
+        this.lastmove = [this.x, this.y];
+        ctx = myGameArea.context;
+        ctx.fillStyle = color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    };
+    this.die = function(){
+      var mybottom = this.y + (this.height);
+      var end = false;
+      if (mybottom > myGameArea.canvas.height){
+        end = true;
+      }
+      return end;
+    };
+    this.hitSides = function(){
+      var mytop = this.y;
+      var myleft = this.x;
+      var myright = this.x + (this.width);
+      if (mytop < 0){
+        this.y = 0;
+        //reset to canvas height
+      }else if(myleft < 0){
+        this.x = 0;
+        //reset to 0
+      }else if(myright > myGameArea.canvas.width){
+        this.x = myGameArea.canvas.width - this.width;
+        // reset to canvas width
+      }
+    };
+    this.crashWith = function(otherobj) {
+        var myleft = this.x;
+        var myright = this.x + (this.width);
+        var mytop = this.y;
+        var mybottom = this.y + (this.height);
+        var otherleft = otherobj.x;
+        var otherright = otherobj.x + (otherobj.width);
+        var othertop = otherobj.y;
+        var otherbottom = otherobj.y + (otherobj.height);
+        var crash = true;
+
+        if ((mybottom < othertop - otherobj.speed) ||
+               (mytop > otherbottom + otherobj.speed ) ||
+               (myright - this.speedright < otherleft) ||
+               (myleft + this.speedleft > otherright)) {
+           crash = false;
+        }
+        // if(mybottom < othertop || myleft > otherright || myright > otherleft || mytop > otherbottom){
+        //   crash = false;
+        // }
+        // crash positions relative to object
+        if (crash){
+          this.xmove = 0;
+          this.ymove = 0;
+          if(myleft >= otherleft && myright <= otherright){
+            if(mytop < othertop){
+              this.ymove = othertop - mybottom + otherobj.speed;
+              this.movedown = 0;
+              //4
+            }else{
+              this.ymove = otherbottom - mytop + otherobj.speed;
+              this.moveup = 0;
+              //8
+            }
+          }
+          else if(myleft < otherleft){
+            if(mytop < othertop){
+              this.xmove = otherleft - myright - this.speedright;
+              this.ymove = othertop - mybottom + otherobj.speed;
+              if(Math.abs(this.ymove) < Math.abs(this.xmove)){
+                this.xmove = 0;
+                this.movedown = 0;
+              }else{
+                this.ymove = 0;
+                this.moveright = 0;
+              }
+              //3
+            }else if(mytop > othertop){
+              if(mybottom > otherbottom){
+                this.xmove =  otherleft - myright - this.speedright;
+                this.ymove = otherbottom - mytop + otherobj.speed;
+
+
+                if(Math.abs(this.ymove) < Math.abs(this.xmove)){
+                  this.xmove = 0;
+                  this.moveup = 0;
+                }else{
+                  // this.xmove = 0;
+                  this.ymove = 0;
+                  this.moveright = 0;
+                }
+                //1
+              }else{
+                this.xmove = otherleft - myright - this.speedright;
+                this.moveright = 0;
+                //2
+              }
+            }
+          }
+          else if(myright > otherright){
+            if(mytop < othertop){
+              this.ymove = othertop - mybottom + otherobj.speed;
+              this.xmove = otherright - myleft + this.speedleft;
+
+              if(Math.abs(this.ymove) < Math.abs(this.xmove)){
+                this.xmove = 0;
+                this.movedown = 0;
+              }else{
+                this.ymove = 0;
+                this.moveleft = 0;
+              }
+              //5
+            }else if(mytop > othertop){
+              if(mybottom < otherbottom){
+                this.xmove = otherright - myleft + this.speedleft;
+                this.moveleft = 0;
+                //6
+              }else{
+                this.xmove = otherright - myleft + this.speedleft;
+                this.ymove = otherbottom - mytop + otherobj.speed;
+
+
+                if(Math.abs(this.ymove) < Math.abs(this.xmove)){
+                  this.xmove = 0;
+                  this.moveup = 0;
+                }else{
+                  // this.xmove = 0;
+                  this.ymove = 0;
+                  this.moveleft = 0;
+                }
+                //7
+              }
+            }
+          }
+        }
+          // if (myright > otherleft && myleft > otherleft){
+          //   this.crashPositions.right = true;
+          // }
+          // if (myleft < otherright && myright < otherright){
+          //   this.crashPositions.left = true;
+          // }
+          // if (mytop < otherbottom && mybottom < otherbottom){
+          //   this.crashPositions.top = true;
+          // }
+          // if (mybottom > othertop && mytop > othertop){
+          //   this.crashPositions.bottom = true;
+          // }
+
+        return crash;
+    };
+}
+
+
+function everyinterval(n) {
+    if ((myGameArea.frameNo / n) % 1 === 0) {return true;}
+    return false;
+}
+
+
+function updateGameArea() {
+
+    var x, y;
+    myGameArea.frameNo += 1;
+    if (everyinterval(500)){
+      myGameArea.speed += 1;
+      myGameArea.addspeed += 1;
+    }
+    if (everyinterval(500)){
+      myGameArea.times +=1;
+    }
+    if( myGamePiece.die()){
+      myGameArea.stop();
+    }
+    myGamePiece.crashUp = false;
+    myGamePiece.crashDown = false;
+    if (myGameArea.frameNo == 1 || everyinterval(20)) {
+       y = -100;
+       minWidth = 30;
+       maxWidth = 70;
+       minHeight = 12;
+       maxHeight = 30;
+       for (var i = 0; i < myGameArea.times; i++) {
+         x = Math.floor(Math.random() * (myGameArea.canvas.width));
+         randHeight = Math.floor(Math.random()*(maxHeight-minHeight+1) + minHeight);//TODO change back to min height
+         randWidth = Math.floor(Math.random()*(maxWidth-minWidth+1) + minWidth);
+         randSpeed = Math.floor(Math.random()* 5 + myGameArea.speed);
+         myObstacles.push(new component(randWidth, randHeight, "blue", x, y, randSpeed));
+       }
+    }
+    myGamePiece.movedown = 5 + myGameArea.addspeed;
+    myGamePiece.moveright = 5 + myGameArea.addspeed;
+    myGamePiece.moveleft = -5 - myGameArea.addspeed;
+    myGamePiece.moveup = -5 - myGameArea.addspeed;
+    console.log(myObstacles.length)
+    for (i = 0; i < myObstacles.length; i += 1) {
+      if (myObstacles[i].y > 800){
+        myObstacles.splice(i,1);
+      }
+      for (j = 0; j < myObstacles.length; j += 1){
+        if (myObstacles[i].crashWith(myObstacles[j])){
+          if(myObstacles[i].ymove < 0){
+            myObstacles[i].y = myObstacles[i].y + myObstacles[i].ymove;
+            myObstacles[i].speed = myObstacles[j].speed;
+          }
+        }
+      }
+        if (myGamePiece.crashWith(myObstacles[i])) {
+          if (myGamePiece.ymove < 0){
+            myGamePiece.crashUp = true;
+          }
+          if (myGamePiece.ymove > 0){
+            myGamePiece.crashDown = true;
+          }
+          myGamePiece.x = myGamePiece.x + myGamePiece.xmove;
+          myGamePiece.y = myGamePiece.y + myGamePiece.ymove;
+          // myObstacles[i].y + myObstacles[i].height + myObstacles[i].speed;
+          // if (myGamePiece.ymove > 0){
+          //   myGamePiece.y = myGamePiece.y + myGamePiece.ymove + myObstacles[i].speed;
+          // }
+          // if(myGamePiece.ymove > 0){
+          //   myGamePiece.y += myObstacles[i].speed;
+          // }
+          // if(myGamePiece.xmove > 0){
+            // myGameArea.keys[37] = false;
+            // myGamePiece.moveleft = 0;
+          // }else if(myGamePiece.xmove < 0){
+            // myGameArea.keys[39] = false;
+            // myGamePiece.moveleft = 0;
+          // }
+          // else if(myGamePiece.ymove > 0){
+            // myGameArea.keys[38] = false;
+            // myGamePiece.y += myObstacles[i].speed;
+            // myGamePiece.moveup = 0;
+          // }
+          // else if(myGamePiece.ymove < 0){
+            // myGameArea.keys[40] = false;
+
+            // myGamePiece.moveup = 0;
+          // }
+        }
+    }
+    if (myGamePiece.crashUp && myGamePiece.crashDown){
+      myGameArea.stop();
+    }
+    myGameArea.clear();
+
+    if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.x += myGamePiece.moveleft; }
+    if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.x += myGamePiece.moveright; }
+    if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.y += myGamePiece.moveup; }
+    if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.y += myGamePiece.movedown; }
+    myGamePiece.hitSides();
+    myGamePiece.update();
+
+   for (i = 0; i < myObstacles.length; i += 1) {
+       myObstacles[i].y += myObstacles[i].speed;
+       myObstacles[i].update();
+   }
+   drawElapsedTime();
+    // myObstacle.y += 1;
+    // myObstacle2.y += 3;
+
+    // if (myGamePiece.crashWith(myObstacle)) {
+    //   console.log(myGamePiece.xmove);
+    //   console.log(myGamePiece.ymove);
+
+
+    // }
+
+    // myObstacle.update();
+    // myObstacle2.update();
+}
+
+
+// this.width = width;
+// this.height = height;
+// this.x = x;
+// this.y = y;
+// this.update = function(){
+//     ctx = myGameArea.context;
+//     ctx.fillStyle = color;
+//     ctx.fillRect(this.x, this.y, this.width, this.height);
+// };
+// this.crashWithTop = function(otherobj){
+//     var mybottom= this.y;
+//     var othertop = otherobj.y;
+//     var crashtop = true;
+//     if (mybottom < othertop){
+//       crashtop = false;
+//     }
+//     return crashtop;
+// };
+// this.crashWithLeft = function(otherobj){
+//     var myright = this.x;
+//     var otherleft = otherobj.x;
+//     var crashleft = true;
+//     if (myright < otherleft){
+//       crashleft = false;
+//     }
+//     return crashleft;
+// };
+// this.crashWithRight = function(otherobj){
+//     var myleft = this.x + (this.width);
+//     var otherright = otherobj.x + (otherobj.width);
+//     var crashright = true;
+//     if (myleft > otherright){
+//       crashright = false;
+//     }
+//     return crashbottom;
+// };
+// this.crashWithBottom = function(otherobj) {
+//     var mytop = this.y + (this.height);
+//     var otherbottom = otherobj.y + (otherobj.height);
+//     var crashbottom = true;
+//     if (mytop > otherbottom) {
+//        crashbottom = false;
+//     }
+//     return crashbottom;
+// };
+// this.hitBottom = function(){
+//
+// };
