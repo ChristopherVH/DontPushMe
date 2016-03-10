@@ -93,12 +93,15 @@ function component(width, height, color, x, y, speed) {
       var myright = this.x + (this.width);
       if (mytop < 0){
         this.y = 0;
+        this.moveup = 0;
         //reset to canvas height
       }else if(myleft < 0){
         this.x = 0;
+        this.moveleft = 0;
         //reset to 0
       }else if(myright > myGameArea.canvas.width){
         this.x = myGameArea.canvas.width - this.width;
+        this.moveright = 0;
         // reset to canvas width
       }
     };
