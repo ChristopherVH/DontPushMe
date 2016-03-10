@@ -73,6 +73,11 @@ function component(width, height, color, x, y, speed) {
     }else{
       this.speedright = 0;
     }
+    if(myGameArea.keys && myGameArea.keys[40]){
+      this.speeddown = 5;
+    }else{
+      this.speeddown = 0;
+    }
     this.update = function(){
         this.lastmove = [this.x, this.y];
         ctx = myGameArea.context;
@@ -118,8 +123,8 @@ function component(width, height, color, x, y, speed) {
         var otherbottom = otherobj.y + (otherobj.height);
         var crash = true;
 
-        if ((mybottom < othertop - otherobj.speed) ||
-               (mytop > otherbottom + otherobj.speed ) ||
+        if ((mybottom + this.speeddown < othertop - otherobj.speed) ||
+               (mytop > otherbottom) ||
                (myright - this.speedright < otherleft) ||
                (myleft + this.speedleft > otherright)) {
            crash = false;
