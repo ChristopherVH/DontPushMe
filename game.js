@@ -16,8 +16,8 @@ function startGame() {
 var myGameArea = {
     canvas : document.createElement("canvas"),
     start : function() {
-        this.canvas.width = 800;
-        this.canvas.height = 800;
+        this.canvas.width = 600;
+        this.canvas.height = 600;
         this.context = this.canvas.getContext("2d");
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.interval = setInterval(updateGameArea, 20);
@@ -328,7 +328,7 @@ function updateGameArea() {
     myGamePiece.moveleft = -5 - myGameArea.addspeed;
     myGamePiece.moveup = -5 - myGameArea.addspeed;
     for (i = 0; i < myObstacles.length; i += 1) {
-      if (myObstacles[i].y > 800){
+      if (myObstacles[i].y > 600){
         myObstacles.splice(i,1);
       }
       for (j = 0; j < myObstacles.length; j += 1){
