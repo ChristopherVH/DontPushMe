@@ -24,7 +24,7 @@ var myGameArea = {
         this.frameNo = 0;
         this.addspeed = 0;
         this.speed = 2;
-        this.times = 5;
+        this.times = 3;
         window.addEventListener('keydown', function (e) {
             myGameArea.keys = (myGameArea.keys || []);
             myGameArea.keys[e.keyCode] = true;
@@ -146,10 +146,12 @@ function component(width, height, color, x, y, speed) {
       if (mytop < 0){
         this.y = 0;
         //reset to canvas height
-      }else if(myleft < 0){
+      }
+      if(myleft < 0){
         this.x = 0;
         //reset to 0
-      }else if(myright > myGameArea.canvas.width){
+      }
+      if(myright > myGameArea.canvas.width){
         this.x = myGameArea.canvas.width - this.width;
         // reset to canvas width
       }
@@ -296,10 +298,10 @@ function updateGameArea() {
 
     var x, y;
     myGameArea.frameNo += 1;
-    if (everyinterval(600)){
+    if (everyinterval(1000)){
       myGameArea.speed += 1;
     }
-    if (everyinterval(400)){
+    if (everyinterval(300)){
       myGameArea.times +=1;
     }
     if (everyinterval(900)){
@@ -316,7 +318,7 @@ function updateGameArea() {
     if (myGameArea.frameNo == 1 || everyinterval(20)) {
        y = -100;
        minWidth = 30;
-       maxWidth = 70;
+       maxWidth = 50;
        minHeight = 12;
        maxHeight = 30;
        for (var i = 0; i < myGameArea.times; i++) {
@@ -347,32 +349,32 @@ function updateGameArea() {
           if (myGamePiece.ymove < 0){
             myGamePiece.crashUp = true;
             myGamePiece.crashNumb +=1;
-            console.log("CRASHUP");
+            // console.log("CRASHUP");
           }
           if (myGamePiece.ymove > 0){
             myGamePiece.crashDown = true;
             myGamePiece.crashNumb +=1;
-            console.log("CRASHDOWN");
+            // console.log("CRASHDOWN");
           }
           if (myGamePiece.xmove < 0){
             myGamePiece.crashRight = true;
             myGamePiece.crashNumb +=1;
-            console.log("CRASHRIGHT");
+            // console.log("CRASHRIGHT");
           }
           if (myGamePiece.xmove > 0){
             myGamePiece.crashLeft = true;
             myGamePiece.crashNumb +=1;
-            console.log("CRASHLEFT");
+            // console.log("CRASHLEFT");
           }
 
           if ((myGamePiece.crashUp && myGamePiece.crashDown)){
             myGameArea.stop();
           }
 
-          console.log(myGamePiece.crashUp);
-          console.log(myGamePiece.crashRight);
-          console.log(myGamePiece.crashDown);
-          console.log(myGamePiece.crashLeft);
+          // console.log(myGamePiece.crashUp);
+          // console.log(myGamePiece.crashRight);
+          // console.log(myGamePiece.crashDown);
+          // console.log(myGamePiece.crashLeft);
           myGamePiece.x = myGamePiece.x + myGamePiece.xmove;
           myGamePiece.y = myGamePiece.y + myGamePiece.ymove;
           // myObstacles[i].y + myObstacles[i].height + myObstacles[i].speed;
