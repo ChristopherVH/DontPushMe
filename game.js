@@ -15,6 +15,10 @@ function startGame() {
 
 var myGameArea = {
     canvas : document.createElement("canvas"),
+    instructions: function(){
+      this.canvas.width = 600;
+      this.canvas.height = 600;
+    },
     start : function() {
         this.canvas.width = 600;
         this.canvas.height = 600;

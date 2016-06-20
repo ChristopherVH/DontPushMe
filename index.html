@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script   src="https://code.jquery.com/jquery-3.0.0.min.js"   integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0="   crossorigin="anonymous"></script>
     <meta charset="utf-8">
     <title></title>
     <style>
+    *{
+      font-family: Impact, Charcoal, sans-serif;
+    }
     canvas {
         border: 1px solid #d3d3d3;
         background-color: #add8e6;
@@ -12,13 +16,36 @@
         top: 80px;
         transform: translateX(-50%);
     }
+    #controls{
+      position: absolute;
+      left: 70%;
+      top: 60%;
+    }
     h1{
       text-align: center;
     }
-    </style>
+    body {
+      background-image: url("http://res.cloudinary.com/dzmavimlg/image/upload/v1466372096/Icy_fscdj6.jpg");
+    }
+    figure {
+      display: inline-block;
+    }
+    figure img {
+        margin-left: 10px;
+    }
+    figure figcaption {
+        text-align: center;
+    }
+  </style>
   </head>
   <h1>Don't Push Me</h1>
+  <figure id="controls">
+    <img height="100" width="150" src="http://fud.community.services.support.microsoft.com/Fud/FileDownloadHandler.ashx?fid=9e706ef8-af2b-44e3-8154-08952f2b0505"/>
+    <figcaption>Move with the arrow keys!</figcaption>
+  </figure>
   <body onload="startGame()">
+    <div id="gameDiv"/>
+    <div id="reactDiv"/>
     <script src="./game.js"></script>
   </body>
 </html>
