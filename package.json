@@ -1,0 +1,24 @@
+{
+  "name": "DontPushMe",
+  "version": "1.0.0",
+  "description": "[Don't Push Me](http://christophervh.github.io/DontPushMe/) is an object-oriented javascript game built using html5 and canvas.",
+  "main": "game.js",
+  "dependencies": {
+    "jquery": "^3.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChristopherVH/DontPushMe.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ChristopherVH/DontPushMe/issues"
+  },
+  "homepage": "https://github.com/ChristopherVH/DontPushMe#readme"
+}

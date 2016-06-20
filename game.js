@@ -1,24 +1,28 @@
-
 var myGamePiece;
 var myObstacles = [];
-var startTime = new Date();
+var startTime;
 var playerImage = new Image();
 playerImage.src = "./Fother-penguin.png";
+var database = firebase.database();
 
-function startGame() {
-    myGameArea.start();
-    myGamePiece = new component(30, 30, "red", 270, 540);
-    myObstacle = new component(80, 40, "blue", 80, 0);
+
+
+function saveScore(name, score) {
+  var playerScore = {
+    name: name,
+    score: score
+  };
+  var newPostKey = database.ref().child('scores').push().key;
+
+  database.ref('scores/' + newPostKey).set({
+    name: playerScore.name,
+    score: playerScore.score
+  });
 }
-
 
 
 var myGameArea = {
     canvas : document.createElement("canvas"),
-    instructions: function(){
-      this.canvas.width = 600;
-      this.canvas.height = 600;
-    },
     start : function() {
         this.canvas.width = 600;
         this.canvas.height = 600;
@@ -42,7 +46,9 @@ var myGameArea = {
     },
     stop : function() {
       clearInterval(this.interval);
-      alert("GAME OVER");
+      var person = prompt("Please enter your name to get high-score bragging rights");
+      var finalScore = new Date() - startTime;
+      saveScore(person, finalScore);
       document.location.reload();
     }
 };
@@ -434,4 +440,15 @@ function updateGameArea() {
 
     // myObstacle.update();
     // myObstacle2.update();
+}
+
+function startGame() {
+  $("#startButton").click(function (){
+    $("#startButton").hide();
+    $("#infoContainer").hide();
+    myGameArea.start();
+    startTime = new Date();
+    myGamePiece = new component(30, 30, "red", 270, 540);
+  });
+
 }

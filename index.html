@@ -17,9 +17,54 @@
         transform: translateX(-50%);
     }
     #controls{
+      position: relative;
+    }
+    #infoContainer{
       position: absolute;
-      left: 70%;
-      top: 60%;
+      background-color: white;
+      border-radius: 20px;
+      height: 700px;
+      width: 700px;
+      left: 50%;
+      top: 50px;
+      transform: translateX(-50%);
+      text-align: center;
+      margin-top: 20px;
+      border-style: solid;
+    }
+    .gameDescription{
+      font-size: 20px;
+    }
+    .dangerArrow{
+      position: relative;
+      top: 25px;
+      -ms-transform: rotate(90deg); /* IE 9 */
+      -webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
+      transform: rotate(90deg);
+    }
+    .gunter{
+      position: relative;
+      top: 50px;
+    }
+    .gameDiagram{
+      display: inline-block;
+      width: 120px;
+      height: 400px;
+      margin-left: 5%;
+    }
+    .gameDiagram *{
+      margin-top: 10px;
+    }
+    #startButton{
+      padding: 10px;
+      border-radius: 5px;
+      background-color: white;
+      font-size: 20px;
+      display: block;
+      position: relative;
+      bottom: 10%;
+      margin: 0 auto;
+      z-index: 3;
     }
     h1{
       text-align: center;
@@ -30,22 +75,42 @@
     figure {
       display: inline-block;
     }
-    figure img {
-        margin-left: 10px;
-    }
     figure figcaption {
         text-align: center;
     }
   </style>
   </head>
+  <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyDgRCl-F6eiDF0md1Vee3qvF12hv8weN24",
+      authDomain: "jsgame-2f748.firebaseapp.com",
+      databaseURL: "https://jsgame-2f748.firebaseio.com",
+      storageBucket: "jsgame-2f748.appspot.com",
+    };
+    firebase.initializeApp(config);
+  </script>
   <h1>Don't Push Me</h1>
-  <figure id="controls">
-    <img height="100" width="150" src="http://fud.community.services.support.microsoft.com/Fud/FileDownloadHandler.ashx?fid=9e706ef8-af2b-44e3-8154-08952f2b0505"/>
-    <figcaption>Move with the arrow keys!</figcaption>
-  </figure>
+  <div id="infoContainer">
+    <p class="gameDescription">Blocks of ice will fall from the top.</p>
+    <p class="gameDescription">They fall faster and become greater in number with time.</p>
+    <p class="gameDescription">If you get pushed to the bottom you lose.</p>
+    <p class="gameDescription">If you get squished between two blocks, you lose.</p>
+    <p class="gameDescription">The ice will stick to itself, so be careful!</p>
+    <p class="gameDescription">How long can you last?</p>
+    <div class="gameDiagram">
+      <img class="iceBlock" height="100" width="100" src="http://res.cloudinary.com/dzmavimlg/image/upload/v1466446341/Ice_Block_xu4dsy.png"></img>
+      <img class="dangerArrow" height="40" width="100" src="http://res.cloudinary.com/dzmavimlg/image/upload/v1466446496/dangerarrow_j508cn.png"></img>
+      <img class="gunter" height="100" width="70" src="http://res.cloudinary.com/dzmavimlg/image/upload/v1466446077/gunter_ixxqja.jpg"></img>
+    </div>
+    <figure id="controls">
+      <img height="140" width="210" src="http://fud.community.services.support.microsoft.com/Fud/FileDownloadHandler.ashx?fid=9e706ef8-af2b-44e3-8154-08952f2b0505"/>
+      <figcaption><br>Move with the arrow keys!</figcaption>
+    </figure>
+    <button id="startButton"> Let's do this thing!</button>
+  </div>
   <body onload="startGame()">
-    <div id="gameDiv"/>
-    <div id="reactDiv"/>
     <script src="./game.js"></script>
   </body>
 </html>
