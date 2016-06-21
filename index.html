@@ -34,6 +34,21 @@
       margin-top: 20px;
       border-style: solid;
     }
+    #highScoreBoard{
+      display:inline-block;
+      width: 20%;
+    }
+    #hall{
+      margin:0 auto;
+      padding-left: 40px;
+      font-size: 20px;
+    }
+    #highScoreList{
+      list-style: none;
+    }
+    #highScoreList *{
+      margin-top: 10px;
+    }
     .gameDescription{
       font-size: 25px;
     }
@@ -105,10 +120,15 @@
       <img class="gunter" height="100" width="70" src="http://res.cloudinary.com/dzmavimlg/image/upload/v1466446077/gunter_ixxqja.jpg"></img>
     </div>
     <figure id="controls">
-      <img height="140" width="210" src="http://fud.community.services.support.microsoft.com/Fud/FileDownloadHandler.ashx?fid=9e706ef8-af2b-44e3-8154-08952f2b0505"/>
+      <img height="140" width="210" src="http://res.cloudinary.com/dzmavimlg/image/upload/v1466495215/arrows2.0_mom7k1.png"/>
       <figcaption><br>Move with the arrow keys!</figcaption>
     </figure>
     <button id="startButton"> Let's do this thing!</button>
+  </div>
+  <div id="highScoreBoard">
+    <p id="hall"><u><em>Hall of Fame<em></u></p>
+    <ul id="highScoreList">
+    </ul>
   </div>
   <body onload="startGame()">
     <script src="./game.js"></script>

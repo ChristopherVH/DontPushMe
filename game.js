@@ -5,7 +5,13 @@ var playerImage = new Image();
 playerImage.src = "./Fother-penguin.png";
 var database = firebase.database();
 var highScores = [];
+var windowFocus = true;
 
+$(window).focus(function() {
+    windowFocus = true;
+}).blur(function() {
+    windowFocus = false;
+});
 
 function saveScore(name, score) {
   var playerScore = {
@@ -16,23 +22,48 @@ function saveScore(name, score) {
 }
 
 function updateHighScores(){
+  var innerHTML = "";
+  highScores = [];
   database.ref("scores")
     .limitToLast(10)
       .orderByChild("score")
         .on("child_added", function(snapshot){
             highScores.push({name: snapshot.val().name, score: snapshot.val().score });
         });
+  $("#highScoreList").empty();
+  highScores.reverse();
+  for(var i=0; i<highScores.length; i++){
+    innerHTML = (i + 1).toString() + " ) " +  highScores[i].name + " : " + highScores[i].score;
+    $("#highScoreList").append($("<li>").text(innerHTML));
+
+  }
+}
+
+function restartCanvas(){
+  myObstacles = [];
+  myGamePiece.x = 270;
+  myGamePiece.y = 540;
+  myGamePiece.xmove = 0;
+  myGamePiece.ymove = 0;
+  myGamePiece.crashUp = false;
+  myGamePiece.crashDown = false;
+  myGamePiece.crashRight = false;
+  myGamePiece.crashLeft = false;
+  myGamePiece.crashNumb = 0;
+  myGameArea.keys = [];
+  myGameArea.start();
 }
 
 
 var myGameArea = {
     canvas : document.createElement("canvas"),
     start : function() {
+        startTime = new Date();
         this.canvas.width = 600;
         this.canvas.height = 600;
         this.context = this.canvas.getContext("2d");
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-        this.interval = setInterval(updateGameArea, 20);
+        this.interval = setInterval(unFocused, 20);
         this.frameNo = 0;
         this.addspeed = 0;
         this.speed = 2;
@@ -51,9 +82,13 @@ var myGameArea = {
     stop : function() {
       clearInterval(this.interval);
       var finalScore = ((new Date() - startTime)/1000);
+      restartCanvas();
       var person = prompt("Please enter your name to get high-score bragging rights");
-      saveScore(person, finalScore);
+      if (person !== "" || person.length < 15 && person.length > 0 && !(person.startsWith(" "))){
+        saveScore(person, finalScore);
+      }
       updateHighScores();
+      startTime = new Date;
     }
 };
 
@@ -63,6 +98,14 @@ function drawElapsedTime() {
     ctx.font = "30px Arial";
     ctx.fillStyle = "black";
     ctx.fillText(elapsed.toString(),500,550);
+}
+
+function unFocused(){
+  if (windowFocus){
+    updateGameArea();
+  }else{
+    startTime = new Date();
+  }
 }
 
 
@@ -447,6 +490,7 @@ function updateGameArea() {
 }
 
 function startGame() {
+  updateHighScores();
   $("#startButton").click(function (){
     $("#startButton").hide();
     $("#infoContainer").hide();
@@ -454,5 +498,4 @@ function startGame() {
     startTime = new Date();
     myGamePiece = new component(30, 30, "red", 270, 540);
   });
-
 }
