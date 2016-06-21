@@ -84,7 +84,7 @@ var myGameArea = {
       var finalScore = ((new Date() - startTime)/1000);
       restartCanvas();
       var person = prompt("Please enter your name to get high-score bragging rights");
-      if (person !== undefined || person !== "" || person.length < 15 && person.length > 0 && !(person.startsWith(" "))){
+      if (person !== undefined && person !== "" &&  person.length < 25 && person.length > 0 && !(person.startsWith(" "))){
         saveScore(person, finalScore);
       }
       updateHighScores();
