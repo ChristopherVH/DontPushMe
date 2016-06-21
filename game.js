@@ -4,7 +4,7 @@ var startTime;
 var playerImage = new Image();
 playerImage.src = "./Fother-penguin.png";
 var database = firebase.database();
-
+var highScores = [];
 
 
 function saveScore(name, score) {
@@ -12,12 +12,16 @@ function saveScore(name, score) {
     name: name,
     score: score
   };
-  var newPostKey = database.ref().child('scores').push().key;
+  database.ref().child('scores').push(playerScore);
+}
 
-  database.ref('scores/' + newPostKey).set({
-    name: playerScore.name,
-    score: playerScore.score
-  });
+function updateHighScores(){
+  database.ref("scores")
+    .limitToLast(10)
+      .orderByChild("score")
+        .on("child_added", function(snapshot){
+            highScores.push({name: snapshot.val().name, score: snapshot.val().score });
+        });
 }
 
 
@@ -46,10 +50,10 @@ var myGameArea = {
     },
     stop : function() {
       clearInterval(this.interval);
+      var finalScore = ((new Date() - startTime)/1000);
       var person = prompt("Please enter your name to get high-score bragging rights");
-      var finalScore = new Date() - startTime;
       saveScore(person, finalScore);
-      document.location.reload();
+      updateHighScores();
     }
 };
 
