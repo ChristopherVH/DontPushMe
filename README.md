@@ -30,7 +30,3 @@ As the game has rendered more frames, certain attributes for each component are 
 
 The update game method handles processing keystrokes to allow the player to move, game over constraints, and the re-rendering all components to their new positions.
 
-#Features in Progress
-
-- [ ] Leader Board
-- [ ] Different block types
